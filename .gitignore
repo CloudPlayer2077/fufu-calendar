@@ -1,0 +1,18 @@
+# 依赖
+node_modules/
+
+# 本地调试
+.wrangler/
+.dev.vars
+*.log
+.DS_Store
+Thumbs.db
+
+# 编辑器
+.vscode/
+.idea/
+
+# 注意：以下目录**要提交**，Cloudflare 部署依赖它们
+#   _source/              前端源和数据快照
+#   public/               构建产物（部署直接用它，不用在 Cloudflare 上跑构建）
+#   lib/data.generated.mjs  数据模块

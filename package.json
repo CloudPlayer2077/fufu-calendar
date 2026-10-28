@@ -1,0 +1,17 @@
+{
+  "name": "fufu-calendar-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FURINA CALENDAR 在线版 —— 四游活动日程，只读展示",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.cjs",
+    "dev": "wrangler pages dev public --compatibility-date=2025-01-01",
+    "deploy": "wrangler pages deploy public --project-name=fufu-calendar",
+    "test": "node scripts/test-handler.cjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
+  "license": "MIT"
+}

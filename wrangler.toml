@@ -1,0 +1,7 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "fufu-calendar"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "public"
+
+# 这是一个纯静态 + Pages Functions 的项目，不需要额外的绑定。
+# 数据在构建时已经打进 lib/data.generated.mjs，运行时不读数据库。

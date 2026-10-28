@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FURINA CALENDAR</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/img/furina-avatar.png">
+<link rel="apple-touch-icon" href="/img/furina-avatar.png">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/views.css">
+</head>
+<body>
+
+<div id="app">
+  <!-- ================= 侧边栏 ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <img class="brand-mark" src="/img/furina-avatar.png" alt="Furina">
+      <img class="brand-mihoyo" src="/img/mihoyo-logo.png" alt="miHoYo">
+      <div class="brand-text">
+        <div class="brand-title">FURINA CALENDAR</div>
+        <div class="brand-sub">四游活动日程</div>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <div class="nav-item active" data-view="calendar">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2.5" y="4" width="15" height="13.5" rx="2.5"/>
+          <path d="M2.5 8h15M6.5 2.5v3M13.5 2.5v3" stroke-linecap="round"/>
+        </svg>
+        <span>月历</span>
+      </div>
+      <div class="nav-item" data-view="timeline">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 5.5h9M5.5 10h10M3 14.5h7" stroke-linecap="round"/>
+        </svg>
+        <span>时间轴</span>
+      </div>
+      <div class="nav-item" data-view="deadline">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="10" cy="10.5" r="6.5"/>
+          <path d="M10 6.8v4l2.6 1.6M7 2.5h6" stroke-linecap="round"/>
+        </svg>
+        <span>死线看板</span>
+        <span class="nav-badge" id="badge-due" style="display:none">0</span>
+      </div>
+      <div class="nav-item" data-view="import">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M10 13.5V3.5M6.2 7.2 10 3.4l3.8 3.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 13v2.5A2.5 2.5 0 0 0 5.5 18h9a2.5 2.5 0 0 0 2.5-2.5V13" stroke-linecap="round"/>
+        </svg>
+        <span>截图导入</span>
+      </div>
+    </nav>
+
+    <div class="side-section">游戏筛选</div>
+    <div class="game-list" id="game-list"></div>
+
+    <div class="side-section">状态</div>
+    <div class="game-list" style="flex:0 0 auto">
+      <div class="game-row" id="row-all-toggle" title="打开游戏显示设置">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="width:13px;height:13px;opacity:.85">
+          <circle cx="8" cy="8" r="2.2"/>
+          <path d="M8 1.8v1.6M8 12.6v1.6M1.8 8h1.6M12.6 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M12.4 3.6l-1.1 1.1M4.7 11.3l-1.1 1.1" stroke-linecap="round"/>
+        </svg>
+        <span class="game-name" id="game-filter-hint">游戏显示设置</span>
+      </div>
+    </div>
+
+    <div class="sidebar-foot">
+      <div class="side-stat"><span>进行中</span><b id="stat-active">0</b></div>
+      <div class="side-stat"><span>7 天内截止</span><b id="stat-week" style="color:var(--warn)">0</b></div>
+      <div class="side-stat"><span>已结束</span><b id="stat-past">0</b></div>
+    </div>
+  </aside>
+
+  <!-- ================= 主区 ================= -->
+  <main class="main">
+    <header class="topbar">
+      <div class="col">
+        <div class="page-title" id="page-title">月历</div>
+        <div class="page-sub" id="page-sub"></div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="row" id="topbar-actions"></div>
+    </header>
+
+    <div class="content" id="content">
+      <!-- 月历 -->
+      <section class="view active" id="view-calendar"></section>
+      <!-- 时间轴 -->
+      <section class="view" id="view-timeline"></section>
+      <!-- 死线 -->
+      <section class="view" id="view-deadline"></section>
+      <!-- 导入 -->
+      <section class="view" id="view-import"></section>
+    </div>
+  </main>
+</div>
+
+<div id="drawer-mask" class="drawer-mask"></div>
+<aside id="drawer" class="drawer"></aside>
+<div id="modal-root"></div>
+<div id="reminder-root"></div>
+<div id="toast-root"></div>
+
+<script src="/js/api.js"></script>
+<script src="/js/util.js"></script>
+<script src="/js/store.js"></script>
+<script src="/js/calendar.js"></script>
+<script src="/js/timeline.js"></script>
+<script src="/js/deadline.js"></script>
+<script src="/js/import.js"></script>
+<script src="/js/drawer.js"></script>
+<script src="/js/reminder.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
