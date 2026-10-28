@@ -11,7 +11,8 @@
     "test": "node scripts/test-handler.cjs"
   },
   "devDependencies": {
-    "wrangler": "^4.0.0"
+    "wrangler": "^3.114.0"
   },
   "license": "MIT"
 }
+

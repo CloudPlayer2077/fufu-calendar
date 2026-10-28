@@ -66,6 +66,91 @@ function copyDir(src, dst, filter) {
   return n;
 }
 
+/**
+ * 生成静态兜底脚本。
+ * 内联一份数据，并包装 window.fetch：
+ *   - 非 /api/ 请求原样放行
+ *   - 写操作直接本地拒绝（纯静态托管没有后端，不能让请求挂死）
+ *   - 读请求先试真实 API，失败才降级到内联数据
+ */
+function fallbackJs(data) {
+  return `/* 由 scripts/build.cjs 自动生成，请勿手改 */
+/* 作用：纯静态托管（Cloudflare 网页上传不包含 Functions）时，
+   让页面依然能显示数据，不会白屏。 */
+(function () {
+  'use strict';
+
+  var DATA = ${JSON.stringify(data)};
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function nowIso() {
+    var d = new Date(Date.now() + 8 * 3600 * 1000);
+    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' +
+      pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes());
+  }
+
+  function makeResp(obj, status) {
+    return new Response(JSON.stringify(obj), {
+      status: status || 200,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' }
+    });
+  }
+
+  var READONLY = { ok: false, readonly: true,
+    error: '这是在线预览版，只支持查看。添加/编辑/导入请使用桌面版。' };
+
+  function localApi(url, method) {
+    if (String(method || 'GET').toUpperCase() !== 'GET') {
+      return makeResp(READONLY, 403);
+    }
+    var path = String(url).split('?')[0];
+    if (path === '/api/health') {
+      return makeResp({ ok: true, version: DATA.version, mode: 'static' });
+    }
+    if (path === '/api/bootstrap') {
+      var d = JSON.parse(JSON.stringify(DATA));
+      d.now = nowIso();
+      return makeResp(d);
+    }
+    if (path === '/api/events') return makeResp({ ok: true, events: DATA.events });
+    if (path === '/api/reminders/due') return makeResp({ ok: true, due: [] });
+    if (path === '/api/settings') return makeResp({ ok: true, settings: DATA.settings });
+    if (path === '/api/sources') return makeResp({ ok: true, sources: [] });
+    return null;
+  }
+
+  var orig = window.fetch ? window.fetch.bind(window) : null;
+
+  window.fetch = function (input, init) {
+    var url = typeof input === 'string' ? input : ((input && input.url) || '');
+    var method = (init && init.method) || (input && input.method) || 'GET';
+
+    if (url.indexOf('/api/') === -1) {
+      return orig ? orig(input, init) : Promise.reject(new Error('no fetch'));
+    }
+
+    var local = localApi(url, method);
+
+    // 写操作直接本地拒绝，不必等网络超时
+    if (String(method).toUpperCase() !== 'GET' && local) {
+      return Promise.resolve(local);
+    }
+    if (!orig) {
+      return local ? Promise.resolve(local) : Promise.reject(new Error('offline'));
+    }
+    return orig(input, init).then(function (resp) {
+      if (resp && resp.ok) return resp;
+      return local || resp;
+    }).catch(function () {
+      if (local) return local;
+      throw new Error('api unavailable');
+    });
+  };
+})();
+`;
+}
+
 // ---------------------------------------------------------------- 主流程
 
 const src = resolveSrc();
@@ -143,7 +228,29 @@ fs.writeFileSync(libPath,
 log('生成 Functions 数据模块 ' +
   (fs.statSync(libPath).size / 1024).toFixed(1) + ' KB');
 
-// 3. 首页注入在线版标识
+// 3. 生成静态兜底脚本
+// 目的：Cloudflare Pages 的「网页上传」方式不包含 Functions，
+// 此时 /api/* 会 404，页面就白了。这个脚本里内联了一份数据，
+// 优先走真实 API，失败时自动降级到本地数据，保证纯静态托管也能正常显示。
+const fallbackData = {
+  ok: true,
+  games: libData.games,
+  categories: libData.categories,
+  events: libData.events,
+  settings: libData.settings,
+  now: null,           // 运行时按北京时间算
+  version: '1.0.0-static',
+  readonly: true,
+  exportedAt: libData.generatedAt
+};
+
+fs.mkdirSync(path.join(PUBLIC, 'js'), { recursive: true });
+const fallbackPath = path.join(PUBLIC, 'js', 'fallback-data.js');
+fs.writeFileSync(fallbackPath, fallbackJs(fallbackData), 'utf8');
+log('生成静态兜底数据 ' +
+  (fs.statSync(fallbackPath).size / 1024).toFixed(1) + ' KB');
+
+// 4. 首页注入在线版标识 + 兜底脚本（兜底必须在业务脚本之前）
 const indexPath = path.join(PUBLIC, 'index.html');
 if (fs.existsSync(indexPath)) {
   let html = fs.readFileSync(indexPath, 'utf8');
@@ -152,13 +259,24 @@ if (fs.existsSync(indexPath)) {
   html = html.replace(/<title>([^<]*)<\/title>/,
     '<title>$1 · 在线版</title>');
 
-  // 在 body 末尾插入只读脚本（放在所有业务脚本之后）
-  const patch = `
-<script src="/js/online-mode.js"></script>
-`;
-  html = html.replace('</body>', patch + '</body>');
+  // 兜底脚本插在 api.js 之前
+  const fbTag = '<script src="/js/fallback-data.js"></script>\n';
+  if (/<script src="js\/api\.js"><\/script>/.test(html)) {
+    html = html.replace(/<script src="js\/api\.js"><\/script>/,
+      fbTag + '<script src="js/api.js"></script>');
+  } else if (/<script[^>]*src="[^"]*api\.js"/.test(html)) {
+    html = html.replace(/(<script[^>]*src="[^"]*api\.js")/,
+      fbTag + '$1');
+  } else {
+    // 兜底：直接塞在 head 末尾
+    html = html.replace('</head>', fbTag + '</head>');
+  }
+
+  // 只读补丁插在 body 末尾
+  html = html.replace('</body>',
+    '\n<script src="/js/online-mode.js"></script>\n</body>');
   fs.writeFileSync(indexPath, html, 'utf8');
-  log('已注入在线版标识');
+  log('已注入在线版标识和兜底脚本');
 }
 
 // 4. 补丁脚本放进 public/js/

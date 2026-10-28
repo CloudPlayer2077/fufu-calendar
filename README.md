@@ -102,12 +102,23 @@ Cloudflare 如果配了自动部署，推送后约 30 秒生效。
 
 ## 部署到 Cloudflare Pages
 
-### 前置准备
+有三种方式，按你的情况选一种。
 
-- 一个 GitHub 账号
-- 一个 Cloudflare 账号（免费版够用，不需要绑卡）
+| 方式 | 需要 GitHub | Functions | 适合场景 |
+| --- | --- | --- | --- |
+| **A. 连接 Git 仓库** | 需要 | 有 | 想要自动更新、长期维护 |
+| **B. 网页上传 zip** | 不需要 | 无（走兜底） | 最快，5 分钟上线 |
+| **C. wrangler 命令行** | 不需要 | 有 | 本机能跑命令，想省事 |
 
-### 第一步：推到 GitHub
+> **关于 Functions**：方式 B 上传的是纯静态文件，`/api/*` 会 404。
+> 这时页面会自动使用 `js/fallback-data.js` 里的内联数据兜底，照样正常显示。
+> 区别只是数据在构建时就固定了，不像 Functions 那样能返回实时的"今天"。
+
+---
+
+### 方式 A：GitHub + Cloudflare Pages（推荐）
+
+#### 第一步：推到 GitHub
 
 ```bash
 cd "E:\FUFU CALENDAR\FURINA CALENDAR Website"
@@ -119,9 +130,10 @@ git remote add origin https://github.com/<你的用户名>/fufu-calendar.git
 git push -u origin main
 ```
 
-仓库建议设为 **Public**（私有仓库 Cloudflare 也能连，但公开更省事）。
+> 如果 `git push` 卡住或报 `Failed to connect to github.com:443`，
+> 说明网络到 GitHub 不稳定。先确认代理软件已开启，或换用方式 B。
 
-### 第二步：Cloudflare 连接仓库
+#### 第二步：Cloudflare 连接仓库
 
 1. 登录 https://dash.cloudflare.com
 2. 左侧菜单 **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
@@ -139,17 +151,45 @@ git push -u origin main
 
 5. 点 **Save and Deploy**
 
-首次部署约 1 分钟。完成后会拿到一个域名：
+首次部署约 1 分钟，完成后拿到 `https://<项目名>.pages.dev`。
 
+---
+
+### 方式 B：网页上传 zip（最快）
+
+**不需要 GitHub，不需要命令行。**
+
+1. 登录 https://dash.cloudflare.com
+2. **Workers & Pages** → **Create** → **Pages** → **Upload assets**
+3. 项目名填 `fufu-calendar`，然后**把 `public` 文件夹整个拖进去**（或上传打包好的 zip）
+4. 点 **Deploy site**
+
+约 30 秒完成，拿到 `https://fufu-calendar.pages.dev`。
+
+> 这种方式没有 Functions，页面靠 `public/js/fallback-data.js` 兜底显示数据。
+> 想更新内容，重新构建后再上传一次即可。
+
+---
+
+### 方式 C：wrangler 命令行
+
+本项目的 `devDependencies` 里已经配好 wrangler（3.114.x）。
+
+```bash
+cd "E:\FUFU CALENDAR\FURINA CALENDAR Website"
+npm install
+npx wrangler login          # 浏览器会弹出授权页
+npm run deploy              # 部署到 Cloudflare Pages
 ```
-https://fufu-calendar.pages.dev
-```
 
-这个地址可以直接分享，全球可访问，不需要备案。
+`wrangler login` 会自动打开浏览器，点「Allow」即可，不需要手动填 token。
 
-### 第三步（可选）：绑定自己的域名
+> 如果 `npm install` 报 `No matching version found for miniflare@...`，
+> 说明 npm 源里缺 beta 包，改用 `npm install wrangler@3 --save-dev`。
 
-如果你有域名并托管在 Cloudflare：
+---
+
+### 绑定自己的域名（可选）
 
 1. 进入 Pages 项目 → **Custom domains** → **Set up a custom domain**
 2. 填入 `calendar.你的域名.com`

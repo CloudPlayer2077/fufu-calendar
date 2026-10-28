@@ -1,0 +1,74 @@
+/* 由 scripts/build.cjs 自动生成，请勿手改 */
+/* 作用：纯静态托管（Cloudflare 网页上传不包含 Functions）时，
+   让页面依然能显示数据，不会白屏。 */
+(function () {
+  'use strict';
+
+  var DATA = {"ok":true,"games":[{"id":"genshin","name":"原神","fullName":"原神","enName":"Genshin Impact","color":"#5B9BD5","accent":"#8FD3FF","glow":"rgba(91,155,213,0.45)","cadence":{"weeks":6,"weekday":3,"hour":6,"minute":0},"keywords":["原神","提瓦特","蒙德","璃月","稻妻","须弥","枫丹","纳塔","挪德卡莱","旅行者","祈愿"],"mark":"原"},{"id":"zzz","name":"绝区零","fullName":"绝区零","enName":"Zenless Zone Zero","color":"#FF7A45","accent":"#FFC08A","glow":"rgba(255,122,69,0.45)","cadence":{"weeks":6,"weekday":3,"hour":6,"minute":0},"keywords":["绝区零","绳网","新艾利都","代理人","邦布","空洞","六分街"],"mark":"绝"},{"id":"hsr","name":"星穹铁道","fullName":"崩坏：星穹铁道","enName":"Honkai: Star Rail","color":"#9B7BFF","accent":"#C9B6FF","glow":"rgba(155,123,255,0.45)","cadence":{"weeks":6,"weekday":3,"hour":11,"minute":0},"keywords":["星穹铁道","星铁","崩坏","开拓者","星穹列车","仙舟","匹诺康尼","翁法罗斯"],"mark":"星"},{"id":"endfield","name":"终末地","fullName":"明日方舟：终末地","enName":"Arknights: Endfield","color":"#2EC4B6","accent":"#8FE6DC","glow":"rgba(46,196,182,0.45)","cadence":{"weeks":6,"weekday":4,"hour":10,"minute":0},"keywords":["终末地","塔卫二","终末地工业","协议核心","深层协议","管理员"],"mark":"终"}],"categories":[{"id":"version","name":"版本","color":"#7FD1FF"},{"id":"activity","name":"活动","color":"#FFD166"},{"id":"banner","name":"卡池","color":"#FF9EC4"},{"id":"maintenance","name":"维护","color":"#9AA5B1"},{"id":"deadline","name":"截止","color":"#FF5C5C"},{"id":"other","name":"其他","color":"#A0AEC0"}],"events":[{"id":"ev_789ae699","game":"genshin","title":"「无忧无虑大雪仗」","category":"activity","startAt":"2026-10-21T10:00","endAt":"2026-11-02T03:59","allDay":false,"note":"版本 7.1 · 地区 至冬 · 来源 BWIKI","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_22811aaf","game":"genshin","title":"「绮星盛会」","category":"other","startAt":"2026-10-01T12:00","endAt":"2026-11-03T04:00","allDay":false,"note":"版本 7.1 · 来源 BWIKI","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_959203d4","game":"genshin","title":"「虹旅藏金·耀星烁熠」","category":"activity","startAt":"2026-09-28T00:00","endAt":"2026-11-04T05:59","allDay":false,"note":"版本 7.1 · 来源 BWIKI","source":"wiki","confidence":0.8,"reminders":[180,1440],"done":false},{"id":"ev_2878c346","game":"genshin","title":"「巡历雪境，凝铸锋锐」","category":"activity","startAt":"2026-09-23T10:00","endAt":"2026-11-03T14:59","allDay":false,"note":"版本 7.1 · 来源 BWIKI","source":"wiki","confidence":0.75,"reminders":[180,1440],"done":false},{"id":"ev_15043a87","game":"genshin","title":"「桌上剧团·冒险的前夜会」","category":"activity","startAt":"2026-09-23T10:00","endAt":"2026-11-03T14:59","allDay":false,"note":"版本 7.1 · 来源 BWIKI","source":"wiki","confidence":0.75,"reminders":[180,1440],"done":false},{"id":"ev_aa8c77e2","game":"genshin","title":"「绮星盛会·奇域佳选」","category":"activity","startAt":"2026-09-23T10:00","endAt":"2026-11-03T04:00","allDay":false,"note":"版本 7.1 · 来源 BWIKI","source":"wiki","confidence":0.75,"reminders":[180,1440],"done":false},{"id":"ev_277698d8","game":"genshin","title":"「绮衣珍赏·晴暖」","category":"activity","startAt":"2026-09-23T10:00","endAt":"2026-11-04T05:59","allDay":false,"note":"版本 7.1 · 来源 BWIKI","source":"wiki","confidence":0.75,"reminders":[180,1440],"done":false},{"id":"ev_77cf0d8a","game":"genshin","title":"「往冥府的安魂歌」","category":"activity","startAt":"2026-09-23T10:00","endAt":"2026-11-03T14:59","allDay":false,"note":"版本 7.1 · 来源 BWIKI","source":"wiki","confidence":0.75,"reminders":[180,1440],"done":false},{"id":"ev_218fe698","game":"genshin","title":"「无神怜爱的冻土」","category":"activity","startAt":"2026-08-12T10:00","endAt":"2026-11-03T14:59","allDay":false,"note":"版本 7.0 · 来源 BWIKI","source":"wiki","confidence":0.75,"reminders":[180,1440],"done":false},{"id":"ev_93aac153","game":"genshin","title":"「狩猎开始！」","category":"activity","startAt":"2026-08-12T06:00","endAt":"2027-08-12T23:59","allDay":true,"note":"版本 7.0 · 来源 BWIKI","source":"wiki","confidence":0.45,"reminders":[180,1440],"done":false},{"id":"ev_700ecd63","game":"genshin","title":"「砺行修远」","category":"activity","startAt":"2026-08-10T04:00","endAt":"2026-11-02T03:59","allDay":false,"note":"版本 6.0 · 来源 BWIKI","source":"wiki","confidence":0.75,"reminders":[180,1440],"done":false},{"id":"ev_6e513826","game":"genshin","title":"「奇域盛邀·妙思觅索」","category":"activity","startAt":"2025-12-03T10:00","endAt":"2026-12-03T23:59","allDay":true,"note":"版本 6.2 · 来源 BWIKI","source":"wiki","confidence":0.45,"reminders":[180,1440],"done":false},{"id":"ev_b9e4ebe2","game":"hsr","title":"「星际和平盛典：一镜到底」","category":"activity","startAt":"2026-10-21T12:00","endAt":"2026-11-11T03:59","allDay":false,"note":"版本 4.6 · 来源 BWIKI","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_5518cef8","game":"hsr","title":"「星际碰碰好搭档！」","category":"activity","startAt":"2026-09-28T11:00","endAt":"2027-09-28T23:59","allDay":true,"note":"版本 4.6 · 来源 BWIKI","source":"wiki","confidence":0.6,"reminders":[180,1440],"done":false},{"id":"ev_d32f4d2a","game":"hsr","title":"「爱，幽灵与机器人」","category":"version","startAt":"2026-09-28T11:00","endAt":"2026-11-11T03:59","allDay":false,"note":"版本 4.6 · 来源 BWIKI","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_118f5332","game":"hsr","title":"「镇伏『贪饕』，汇聚愿力」","category":"activity","startAt":"2026-09-28T11:00","endAt":"2026-11-10T15:00","allDay":false,"note":"版本 4.6 · 来源 BWIKI","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_d438cc55","game":"hsr","title":"「乐子神智取米哈游」","category":"other","startAt":"2026-09-28T11:00","endAt":"2026-11-11T06:00","allDay":false,"note":"版本 4.6 · 来源 BWIKI","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_ab821e7c","game":"hsr","title":"「星际幻宠」乐园","category":"version","startAt":"2026-09-28T11:00","endAt":"2026-11-10T15:00","allDay":false,"note":"版本 4.6 · 来源 BWIKI","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_6813b999","game":"endfield","title":"万物有灵签到","category":"activity","startAt":"2026-10-15T07:00","endAt":"2026-11-05T12:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/万物有灵签到（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_0156fc41","game":"endfield","title":"作战演练","category":"activity","startAt":"2026-10-15T07:00","endAt":"2026-11-05T12:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/作战演练·祀（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_bc42b8dd","game":"endfield","title":"墨分诸彩","category":"activity","startAt":"2026-10-15T07:00","endAt":"2026-11-05T12:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/墨分诸彩（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_9efd77e5","game":"endfield","title":"烟火生缘","category":"activity","startAt":"2026-10-15T07:00","endAt":"2026-11-26T06:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/烟火生缘·10月15日（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_847228ee","game":"endfield","title":"卡莉的芳菲童话","category":"activity","startAt":"2026-10-22T12:00","endAt":"2026-11-05T04:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/卡莉的芳菲童话（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_016a4a2d","game":"endfield","title":"危机筹备","category":"activity","startAt":"2026-10-29T04:00","endAt":"2026-11-05T04:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/危机筹备·10月29日（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_dc1bde4f","game":"endfield","title":"百趣演武","category":"activity","startAt":"2026-10-29T12:00","endAt":"2026-11-19T04:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/百趣演武（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_732ec280","game":"endfield","title":"予众魂的新光影","category":"activity","startAt":"2026-10-31T12:00","endAt":"2026-11-14T04:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/予众魂的新光影（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_c26765ab","game":"endfield","title":"归野","category":"activity","startAt":"2026-11-05T12:00","endAt":"2026-11-26T06:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/归野（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_d6626cee","game":"endfield","title":"星河共我签到","category":"activity","startAt":"2026-11-05T12:00","endAt":"2026-11-26T06:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/星河共我签到（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_12b8e773","game":"endfield","title":"理智补给","category":"activity","startAt":"2026-11-19T04:00","endAt":"2026-11-26T04:00","allDay":false,"note":"https://www.fz.wiki/wiki/活动/理智补给·11月19日（来自结构化 timeRanges）","source":"wiki","confidence":0.9,"reminders":[180,1440],"done":false},{"id":"ev_c5f525d5","game":"zzz","title":"全新放送","category":"activity","startAt":"2026-10-22T10:00","endAt":"2026-12-01T03:59","allDay":false,"note":"3.3 版本活动 · 3.3版本更新后开启（开始日按同期活动推断）","source":"manual","confidence":1,"reminders":[180,1440],"done":false},{"id":"ev_f51eea7b","game":"zzz","title":"怪奇诡屋惊魂记","category":"activity","startAt":"2026-10-22T10:00","endAt":"2026-11-30T03:59","allDay":false,"note":"3.3 版本活动 · 完成「任务模式」全部关卡可在福利活动获取限时时装","source":"manual","confidence":1,"reminders":[180,1440],"done":false},{"id":"ev_535e0c83","game":"zzz","title":"赛博圣手，出诊！","category":"activity","startAt":"2026-10-28T10:00","endAt":"2026-11-16T03:59","allDay":false,"note":"3.3 版本活动 · 来自官网公告截图","source":"manual","confidence":1,"reminders":[180,1440],"done":false},{"id":"ev_e333d74b","game":"zzz","title":"先遣赏金-区域巡防","category":"activity","startAt":"2026-11-04T04:00","endAt":"2026-11-09T03:59","allDay":false,"note":"3.3 版本活动 · 「区域巡防」挑战奖励翻倍","source":"manual","confidence":1,"reminders":[180,1440],"done":false},{"id":"ev_bdd913b8","game":"zzz","title":"「嗯呢」从天降","category":"activity","startAt":"2026-11-11T10:00","endAt":"2026-12-01T03:59","allDay":false,"note":"3.3 版本活动 · 累计登录 7 天可获赠邦布券 ×10","source":"manual","confidence":1,"reminders":[180,1440],"done":false},{"id":"ev_51c0f903","game":"zzz","title":"跛脚乌鸦奇探记","category":"activity","startAt":"2026-11-11T10:00","endAt":"2026-11-30T03:59","allDay":false,"note":"3.3 版本活动 · 来自官网公告截图","source":"manual","confidence":1,"reminders":[180,1440],"done":false},{"id":"ev_37f6a3bf","game":"zzz","title":"修复吧！漂流画集","category":"activity","startAt":"2026-11-16T10:00","endAt":"2026-11-30T03:59","allDay":false,"note":"3.3 版本活动 · 来自官网公告截图","source":"manual","confidence":1,"reminders":[180,1440],"done":false},{"id":"ev_1ad0d4c7","game":"zzz","title":"数据悬赏-实战模拟","category":"activity","startAt":"2026-11-25T04:00","endAt":"2026-11-30T03:59","allDay":false,"note":"3.3 版本活动 · 「实战模拟室」挑战奖励翻倍","source":"manual","confidence":1,"reminders":[180,1440],"done":false}],"settings":{"defaultReminders":[1440,180],"enabledGames":[],"theme":"ocean"},"now":null,"version":"1.0.0-static","readonly":true,"exportedAt":"2026-10-28T01:46:39.368Z"};
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function nowIso() {
+    var d = new Date(Date.now() + 8 * 3600 * 1000);
+    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' +
+      pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes());
+  }
+
+  function makeResp(obj, status) {
+    return new Response(JSON.stringify(obj), {
+      status: status || 200,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' }
+    });
+  }
+
+  var READONLY = { ok: false, readonly: true,
+    error: '这是在线预览版，只支持查看。添加/编辑/导入请使用桌面版。' };
+
+  function localApi(url, method) {
+    if (String(method || 'GET').toUpperCase() !== 'GET') {
+      return makeResp(READONLY, 403);
+    }
+    var path = String(url).split('?')[0];
+    if (path === '/api/health') {
+      return makeResp({ ok: true, version: DATA.version, mode: 'static' });
+    }
+    if (path === '/api/bootstrap') {
+      var d = JSON.parse(JSON.stringify(DATA));
+      d.now = nowIso();
+      return makeResp(d);
+    }
+    if (path === '/api/events') return makeResp({ ok: true, events: DATA.events });
+    if (path === '/api/reminders/due') return makeResp({ ok: true, due: [] });
+    if (path === '/api/settings') return makeResp({ ok: true, settings: DATA.settings });
+    if (path === '/api/sources') return makeResp({ ok: true, sources: [] });
+    return null;
+  }
+
+  var orig = window.fetch ? window.fetch.bind(window) : null;
+
+  window.fetch = function (input, init) {
+    var url = typeof input === 'string' ? input : ((input && input.url) || '');
+    var method = (init && init.method) || (input && input.method) || 'GET';
+
+    if (url.indexOf('/api/') === -1) {
+      return orig ? orig(input, init) : Promise.reject(new Error('no fetch'));
+    }
+
+    var local = localApi(url, method);
+
+    // 写操作直接本地拒绝，不必等网络超时
+    if (String(method).toUpperCase() !== 'GET' && local) {
+      return Promise.resolve(local);
+    }
+    if (!orig) {
+      return local ? Promise.resolve(local) : Promise.reject(new Error('offline'));
+    }
+    return orig(input, init).then(function (resp) {
+      if (resp && resp.ok) return resp;
+      return local || resp;
+    }).catch(function () {
+      if (local) return local;
+      throw new Error('api unavailable');
+    });
+  };
+})();
