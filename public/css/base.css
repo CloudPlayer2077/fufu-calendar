@@ -749,3 +749,145 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .toast.err .toast-icon { color: var(--danger); }
 .toast.info .toast-icon { color: var(--accent); }
 
+
+/* ==========================================================
+   移动端适配
+   策略：窄屏时侧栏从「固定列」变成「抽屉」，
+   默认滑出屏幕外，点顶栏汉堡按钮才滑入，点遮罩关闭。
+   ========================================================== */
+
+/* 汉堡按钮和遮罩：桌面完全不占位 */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(126, 176, 240, 0.24);
+  background: rgba(108, 184, 240, 0.06);
+  color: var(--text-1);
+  cursor: pointer;
+  transition: all 0.16s var(--ease);
+}
+.nav-toggle:hover { background: rgba(108, 184, 240, 0.14); color: var(--text-0); }
+.nav-toggle:active { transform: scale(0.94); }
+.nav-toggle svg { width: 17px; height: 17px; }
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgba(2, 7, 18, 0.66);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s var(--ease);
+}
+.sidebar-overlay.show { opacity: 1; pointer-events: auto; }
+
+/* 抽屉打开时锁住页面滚动 */
+body.nav-open { overflow: hidden; }
+
+@media (max-width: 900px) {
+  #app {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-toggle { display: inline-flex; }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 272px;
+    max-width: 84vw;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.26s var(--ease);
+    box-shadow: 0 0 44px rgba(0, 0, 0, 0.55);
+    will-change: transform;
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .sidebar-overlay { display: block; }
+
+  /* 顶栏收紧 */
+  .topbar {
+    height: 56px;
+    gap: 9px;
+    padding: 0 12px;
+  }
+  .page-title { font-size: 15px; }
+  .page-sub { font-size: 10.5px; }
+
+  .main { width: 100%; min-width: 0; }
+  .content { padding: 12px; }
+
+  /* 顶栏按钮在手机上挤不下，允许换行 */
+  #topbar-actions { flex-wrap: wrap; gap: 6px; }
+}
+
+@media (max-width: 600px) {
+  .topbar { height: 52px; padding: 0 10px; gap: 7px; }
+  .page-title { font-size: 14px; }
+  .page-sub { display: none; }
+  .content { padding: 9px; }
+
+  /* 手机上顶栏只保留搜索和新建，其余收进 ⋮ */
+  #topbar-actions .btn span { display: none; }
+  #online-badge { font-size: 10px; height: 22px; padding: 0 7px; }
+}
+
+/* ==========================================================
+   顶栏自适应修正
+   搜索框宽度改由 CSS 控制，避免手机上挤爆顶栏
+   ========================================================== */
+
+.search-input {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  /* 顶栏绝不允许撑破视口 */
+  .topbar {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .topbar > .col { min-width: 0; flex-shrink: 1; }
+  .topbar-spacer { display: none; }
+
+  #topbar-actions {
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+
+  /* 搜索框吃掉剩余空间，但不会把按钮顶出去 */
+  .search-input {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* 新建按钮只留图标 */
+  #topbar-actions .btn-label { display: none; }
+  #topbar-actions .btn-primary {
+    padding: 0 9px;
+    flex-shrink: 0;
+  }
+
+  /* 页面整体不许横向溢出 */
+  html, body { max-width: 100%; overflow-x: hidden; }
+}
+
+@media (max-width: 600px) {
+  .search-input { font-size: 12px; }
+  #online-badge { display: none; }
+}

@@ -95,12 +95,11 @@
     if (!box) return;
     U.clear(box);
 
-    // 搜索框
+    // 搜索框（宽度交给 CSS 控制，手机上会自动收缩）
     searchInput = U.el('input', {
-      class: 'input',
+      class: 'input search-input',
       placeholder: '搜索活动…',
       value: S.search,
-      style: { width: '180px' },
       oninput: U.debounce(ev => {
         S.search = ev.target.value;
         currentRender();
@@ -117,7 +116,7 @@
         viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': '2',
         html: '<path d="M8 3.5v9M3.5 8h9" stroke-linecap="round"/>'
       }),
-      '新建活动'
+      U.el('span', { class: 'btn-label', text: '新建活动' })
     ]));
 
     // 更多菜单
@@ -559,6 +558,44 @@
     await refresh();
   }
 
+  /* ---------------- 手机侧栏抽屉 ---------------- */
+  function openSidebar() {
+    const bar = U.qs('.sidebar');
+    const overlay = U.qs('#sidebar-overlay');
+    if (!bar) return;
+    bar.classList.add('open');
+    if (overlay) overlay.classList.add('show');
+    document.body.classList.add('nav-open');
+  }
+
+  function closeSidebar() {
+    const bar = U.qs('.sidebar');
+    const overlay = U.qs('#sidebar-overlay');
+    if (!bar) return;
+    bar.classList.remove('open');
+    if (overlay) overlay.classList.remove('show');
+    document.body.classList.remove('nav-open');
+  }
+
+  function bindSidebar() {
+    const btn = U.qs('#nav-toggle');
+    const bar = U.qs('.sidebar');
+    const overlay = U.qs('#sidebar-overlay');
+
+    if (btn && bar) {
+      btn.addEventListener('click', () => {
+        if (bar.classList.contains('open')) closeSidebar();
+        else openSidebar();
+      });
+    }
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+
+    // 从窄屏放大回桌面时，别让抽屉状态残留
+    window.addEventListener('resize', U.debounce(() => {
+      if (window.innerWidth > 900) closeSidebar();
+    }, 150));
+  }
+
   /* ---------------- 导航 ---------------- */
   function bindNav() {
     const nav = U.qs('#nav');
@@ -567,6 +604,7 @@
         const item = ev.target.closest('.nav-item');
         if (!item) return;
         Store.setView(item.dataset.view);
+        closeSidebar();          // 手机选完导航自动收起
       });
     }
 
@@ -579,9 +617,13 @@
     const m = U.qs('#drawer-mask');
     if (m) m.addEventListener('click', () => Drawer.close());
 
+    // 手机侧栏抽屉
+    bindSidebar();
+
     // 快捷键
     document.addEventListener('keydown', ev => {
       if (ev.key === 'Escape') {
+        closeSidebar();
         Drawer.close();
         const mr = U.qs('#modal-root');
         if (mr) mr.innerHTML = '';

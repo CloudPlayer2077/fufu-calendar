@@ -121,13 +121,23 @@
   }
 
   /* ---------- DOM ---------- */
+  // SVG 元素必须用 createElementNS 创建，否则拿到的是 HTMLUnknownElement，
+  // 浏览器不会渲染，表现为「按钮是空的、只能看到 hover 背景」。
+  const SVG_TAGS = new Set([
+    'svg', 'g', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon',
+    'ellipse', 'use', 'defs', 'text', 'tspan', 'clipPath', 'mask'
+  ]);
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
   function el(tag, attrs, children) {
-    const node = document.createElement(tag);
+    const node = SVG_TAGS.has(tag)
+      ? document.createElementNS(SVG_NS, tag)
+      : document.createElement(tag);
     if (attrs) {
       for (const k in attrs) {
         const v = attrs[k];
         if (v === null || v === undefined || v === false) continue;
-        if (k === 'class') node.className = v;
+        if (k === 'class') node.setAttribute('class', v);
         else if (k === 'html') node.innerHTML = v;
         else if (k === 'text') node.textContent = v;
         else if (k === 'style' && typeof v === 'object') Object.assign(node.style, v);

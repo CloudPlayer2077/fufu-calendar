@@ -1130,3 +1130,81 @@
 
 
 
+
+/* ==========================================================
+   移动端：各视图的紧凑排版
+   ========================================================== */
+
+@media (max-width: 900px) {
+  /* ---- 月历 ---- */
+  .cal-head {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .cal-head .topbar-spacer { display: none; }
+  .month-label { font-size: 18px; gap: 6px; }
+  .month-label small { font-size: 11px; }
+
+  /* 图例换行，不撑破头部 */
+  .cal-head .row.wrap { width: 100%; }
+
+  /* ---- 时间轴 ---- */
+  .tl2-scroll { -webkit-overflow-scrolling: touch; }
+
+  /* ---- 死线看板 ---- */
+  .deadline-grid { grid-template-columns: 1fr; }
+
+  /* ---- 导入页 ---- */
+  .import-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  /* ---- 月历 ---- */
+  .month-label { font-size: 16px; }
+  .month-label small { font-size: 10px; }
+
+  .cal-weekday {
+    font-size: 10px;
+    height: 26px;
+    letter-spacing: 0;
+  }
+
+  .cal-cell { padding: 2px 3px; }
+
+  .cal-daynum {
+    font-size: 11px;
+    padding: 1px 3px;
+  }
+  .cal-daynum-badge {
+    font-size: 8px;
+    padding: 0 3px;
+    height: 12px;
+    min-width: 12px;
+    line-height: 12px;
+  }
+
+  /* 条带里只保留游戏缩写字，标题在窄屏放不下 */
+  .cal-ev .ev-t { display: none; }
+  .cal-ev { padding: 0 3px; gap: 2px; }
+  .cal-ev .ev-g { font-size: 8.5px; line-height: 1; padding: 0; }
+  /* 溢出提示在窄屏只显示 +N */
+  .cal-more.compact { font-size: 9px; letter-spacing: -0.2px; }
+
+  /* ---- 时间轴 ---- */
+  .tl2-card { min-height: 64px; }
+  .tl2-card-title { font-size: 13px; }
+  .tl2-day { font-size: 9px; }
+
+  /* ---- 死线看板 ---- */
+  .dl-card { padding: 12px; }
+  .dl-title { font-size: 14px; }
+
+  /* ---- 通用 ---- */
+  .btn { padding: 0 10px; height: 30px; font-size: 11.5px; }
+  .btn-sm { height: 26px; font-size: 11px; padding: 0 9px; }
+  .icon-btn { width: 28px; height: 28px; }
+
+  /* 面板/卡片内边距收紧 */
+  .panel { padding: 12px; }
+}

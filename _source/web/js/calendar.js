@@ -2,11 +2,37 @@
 /* 月历视图：绝对定位精确对齐的跨天事件条带 */
 
 (function () {
-  const MAX_LANES = 5;
-  const BAR_TOP = 24;      // 事件条起始 y（日号行之后）
-  const LANE_H = 16;       // 每条 lane 的高度（含间距）
-  const BAR_H = 14;
-  const MIN_WEEK_H = 96;   // 周最小高度
+  const MAX_LANES_DESKTOP = 5;
+  const BAR_TOP_DESKTOP = 24;   // 事件条起始 y（日号行之后）
+  const LANE_H_DESKTOP = 16;    // 每条 lane 的高度（含间距）
+  const BAR_H_DESKTOP = 14;
+  const MIN_WEEK_H_DESKTOP = 96;
+
+  // 窄屏（手机竖屏）用的紧凑参数：条带更矮、周更矮，尽量塞进一屏
+  // 条带高度要 >= 字号 + 2，否则游戏缩写字会被裁
+  const MAX_LANES_MOBILE = 3;
+  const BAR_TOP_MOBILE = 20;
+  const LANE_H_MOBILE = 14;
+  const BAR_H_MOBILE = 11;
+  const MIN_WEEK_H_MOBILE = 78;
+
+  let MAX_LANES = MAX_LANES_DESKTOP;
+  let BAR_TOP = BAR_TOP_DESKTOP;
+  let LANE_H = LANE_H_DESKTOP;
+  let BAR_H = BAR_H_DESKTOP;
+  let MIN_WEEK_H = MIN_WEEK_H_DESKTOP;
+  let COMPACT = false;
+
+  /** 按视口宽度切换几何参数，render 前调用 */
+  function updateGeo() {
+    const compact = window.innerWidth <= 760;
+    COMPACT = compact;
+    MAX_LANES = compact ? MAX_LANES_MOBILE : MAX_LANES_DESKTOP;
+    BAR_TOP = compact ? BAR_TOP_MOBILE : BAR_TOP_DESKTOP;
+    LANE_H = compact ? LANE_H_MOBILE : LANE_H_DESKTOP;
+    BAR_H = compact ? BAR_H_MOBILE : BAR_H_DESKTOP;
+    MIN_WEEK_H = compact ? MIN_WEEK_H_MOBILE : MIN_WEEK_H_DESKTOP;
+  }
 
   const root = () => U.qs('#view-calendar');
 
@@ -240,8 +266,12 @@
         if (!hidden) continue;
         const day = weekDays[d];
         bars.appendChild(U.el('div', {
-          class: 'cal-more',
-          text: '+' + hidden + ' 更多（共 ' + total + '）',
+          class: 'cal-more' + (COMPACT ? ' compact' : ''),
+          // 窄屏只显示 +N，长文案会把格子挤爆
+          text: COMPACT
+            ? '+' + hidden
+            : '+' + hidden + ' 更多（共 ' + total + '）',
+          title: '还有 ' + hidden + ' 个活动（共 ' + total + ' 个）',
           style: {
             left: 'calc(' + (d / 7 * 100) + '% + 4px)',
             top: (BAR_TOP + MAX_LANES * LANE_H) + 'px'
@@ -290,6 +320,8 @@
   function render() {
     const R = root();
     if (!R) return;
+
+    updateGeo();
 
     const cursor = S.cursor;
     const year = cursor.getFullYear();
@@ -417,4 +449,10 @@
   }
 
   window.CalendarView = { render, layoutWeek, eventDayRange };
+
+  // 窗口尺寸变化时重排（手机横竖屏切换、桌面拖窗口都靠它）
+  window.addEventListener('resize', U.debounce(function () {
+    const R = root();
+    if (R && R.offsetParent !== null) render();
+  }, 200));
 })();
