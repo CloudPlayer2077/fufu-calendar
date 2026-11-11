@@ -1208,3 +1208,43 @@
   /* 面板/卡片内边距收紧 */
   .panel { padding: 12px; }
 }
+
+/* ==========================================================
+   时间轴缩放提示
+   ========================================================== */
+
+.tl-zoom {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+
+.tl-zoom-hint {
+  font-size: 10.5px;
+  color: var(--text-3);
+  letter-spacing: 0.2px;
+  padding: 3px 8px;
+  border-radius: 99px;
+  border: 1px dashed rgba(126, 176, 240, 0.28);
+  white-space: nowrap;
+}
+
+.tl-zoom-label {
+  font-size: 10.5px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 52px;
+  text-align: right;
+}
+
+/* 手机上键盘提示没意义，隐藏；双指缩放是系统手势，不需要教 */
+@media (max-width: 900px) {
+  .tl-zoom-hint { display: none; }
+  .tl-zoom { margin-left: 0; }
+  .tl-zoom-label { font-size: 10px; min-width: 46px; }
+}
+
+/* 缩放到最小时，卡片要能看清标题，收紧内边距 */
+.tl2-scroll { touch-action: pan-x pan-y; }

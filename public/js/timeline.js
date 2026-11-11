@@ -11,12 +11,33 @@
  */
 
 (function () {
-  const DAY_W = 30;          // 每天占的像素宽度
+  const DAY_W_DEFAULT = 30;  // 每天占的像素宽度（默认值）
+  const DAY_W_MIN = 11;      // 缩到最小的极限（42 天一屏勉强塞下）
+  const DAY_W_MAX = 96;      // 放到最大的极限（看清楚每一天）
+  const ZOOM_KEY = 'fufu.tl.dayW';
   const RANGE_DAYS = 42;     // 一屏显示的天数（6 周）
   const ROW_H = 100;         // 每个活动行的高度
   const CARD_H = 88;         // 卡片高度
   const MIN_CARD_W = 46;     // 卡片最小宽度（太短的活动也给个可见的小块）
   const TICK_EVERY = 3;      // 每几天画一个刻度
+
+  /** 当前每天的像素宽度，可由 Alt+滚轮 / 双指捏合调整 */
+  let dayW = DAY_W_DEFAULT;
+
+  // 恢复上次的缩放级别
+  (function restoreZoom() {
+    try {
+      const v = parseFloat(localStorage.getItem(ZOOM_KEY));
+      if (isFinite(v) && v >= DAY_W_MIN && v <= DAY_W_MAX) dayW = v;
+    } catch (e) { /* 隐私模式等读不到就算了 */ }
+  })();
+
+  function saveZoom() {
+    try { localStorage.setItem(ZOOM_KEY, String(dayW)); } catch (e) { /* ignore */ }
+  }
+
+  // zoomTo 触发重排时，跳过「自动滚到今天」的逻辑，避免把用户的位置冲掉
+  let keepScroll = false;
 
   const root = () => U.qs('#view-timeline');
 
@@ -140,6 +161,18 @@
       }));
     }
     bar.appendChild(picker);
+
+    // 缩放提示 + 当前密度
+    bar.appendChild(U.el('div', { class: 'tl-zoom' }, [
+      U.el('span', { class: 'tl-zoom-hint', text: 'Alt + 滚轮缩放' }),
+      U.el('span', {
+        class: 'tl-zoom-label',
+        id: 'tl-zoom-label',
+        text: Math.round(dayW) + 'px/天',
+        title: '当前每天占的像素宽度'
+      })
+    ]));
+
     R.appendChild(bar);
 
     /* ================= 主体 ================= */
@@ -154,7 +187,7 @@
     const scroller = U.el('div', { class: 'tl2-scroll' });
     const inner = U.el('div', {
       class: 'tl2-inner',
-      style: { width: (RANGE_DAYS * DAY_W) + 'px' }
+      style: { width: (RANGE_DAYS * dayW) + 'px' }
     });
 
     /* ---- 日期刻度 ---- */
@@ -168,7 +201,7 @@
 
       const cell = U.el('div', {
         class: 'tl2-day' + (isWe ? ' we' : '') + (isToday ? ' today' : '') + (isMon1 ? ' mon1' : ''),
-        style: { left: (i * DAY_W) + 'px', width: DAY_W + 'px' }
+        style: { left: (i * dayW) + 'px', width: dayW + 'px' }
       });
 
       if (isMon1) {
@@ -193,7 +226,7 @@
     if (todayIdx >= 0) {
       inner.appendChild(U.el('div', {
         class: 'tl2-today-line',
-        style: { left: (todayIdx * DAY_W + DAY_W / 2) + 'px', top: '46px' }
+        style: { left: (todayIdx * dayW + dayW / 2) + 'px', top: '46px' }
       }));
     }
 
@@ -223,8 +256,8 @@
         // 裁剪到窗口
         const cs = Math.max(s.getTime(), startMs);
         const ce = Math.min(en.getTime(), endMs);
-        const leftPx = ((cs - startMs) / 86400000) * DAY_W;
-        const widthPx = Math.max(MIN_CARD_W, ((ce - cs) / 86400000) * DAY_W);
+        const leftPx = ((cs - startMs) / 86400000) * dayW;
+        const widthPx = Math.max(MIN_CARD_W, ((ce - cs) / 86400000) * dayW);
 
         const card = buildCard(e, g, widthPx, leftPx);
         row.appendChild(card);
@@ -236,12 +269,97 @@
     scroller.appendChild(inner);
     R.appendChild(scroller);
 
-    // 自动把今天滚到视野里
+    // 绑定缩放交互（每次重建后都要重新绑，因为 DOM 是新的）
+    bindZoom(scroller);
+
+    // 自动把今天滚到视野里（缩放引发重排时跳过，别抢用户的位置）
     requestAnimationFrame(() => {
+      if (keepScroll) { keepScroll = false; return; }
       if (todayIdx < 0) return;
-      const target = todayIdx * DAY_W - scroller.clientWidth * 0.35;
+      const target = todayIdx * dayW - scroller.clientWidth * 0.35;
       if (target > 0) scroller.scrollLeft = target;
     });
+  }
+
+  /* ==========================================================
+     时间轴缩放
+       · 桌面：按住 Alt 滚鼠标滚轮
+       · 手机：双指捏合
+     缩放以指针位置为锚点，缩放后指针下的日期保持不动。
+     ========================================================== */
+
+  function zoomTo(nextW, anchorClientX) {
+    nextW = Math.max(DAY_W_MIN, Math.min(DAY_W_MAX, nextW));
+    if (Math.abs(nextW - dayW) < 0.4) return;
+
+    const sc = U.qs('.tl2-scroll');
+    if (!sc) { dayW = nextW; return; }
+
+    const rect = sc.getBoundingClientRect();
+    const anchorX = (anchorClientX == null ? rect.left + rect.width / 2 : anchorClientX) - rect.left;
+    // 锚点处对应第几天（缩放前）
+    const dayAt = (sc.scrollLeft + anchorX) / dayW;
+
+    dayW = nextW;
+    saveZoom();
+
+    keepScroll = true;
+    render();
+
+    // 让锚点下的日期回到同一屏幕位置
+    const sc2 = U.qs('.tl2-scroll');
+    if (sc2) {
+      sc2.scrollLeft = Math.max(0, dayAt * dayW - anchorX);
+      keepScroll = false;
+    }
+    updateZoomLabel();
+  }
+
+  function updateZoomLabel() {
+    const el = U.qs('#tl-zoom-label');
+    if (el) el.textContent = Math.round(dayW) + 'px/天';
+  }
+
+  function touchDistance(t1, t2) {
+    const dx = t1.clientX - t2.clientX;
+    const dy = t1.clientY - t2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function bindZoom(scroller) {
+    // ---- 桌面：Alt + 滚轮 ----
+    scroller.addEventListener('wheel', ev => {
+      if (!ev.altKey) return;          // 不按 Alt 就走正常滚动
+      ev.preventDefault();
+      const factor = ev.deltaY < 0 ? 1.14 : 1 / 1.14;
+      zoomTo(dayW * factor, ev.clientX);
+    }, { passive: false });
+
+    // ---- 移动端：双指捏合 ----
+    let startDist = 0;
+    let startW = 0;
+
+    scroller.addEventListener('touchstart', ev => {
+      if (ev.touches.length === 2) {
+        startDist = touchDistance(ev.touches[0], ev.touches[1]);
+        startW = dayW;
+      }
+    }, { passive: true });
+
+    scroller.addEventListener('touchmove', ev => {
+      if (ev.touches.length !== 2 || !startDist) return;
+      ev.preventDefault();
+      const dist = touchDistance(ev.touches[0], ev.touches[1]);
+      if (dist < 10) return;
+      const cx = (ev.touches[0].clientX + ev.touches[1].clientX) / 2;
+      zoomTo(startW * (dist / startDist), cx);
+    }, { passive: false });
+
+    scroller.addEventListener('touchend', ev => {
+      if (ev.touches.length < 2) startDist = 0;
+    }, { passive: true });
+
+    scroller.addEventListener('touchcancel', () => { startDist = 0; }, { passive: true });
   }
 
   function buildCard(e, g, widthPx, leftPx) {
